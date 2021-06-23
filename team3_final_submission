@@ -1,0 +1,591 @@
+# copyright(2021) --> ATEAM
+# This is for imported libraries
+import sys
+import time
+import os
+import subprocess as sp
+import random
+
+#Global Variables
+key = False
+killers_location = ""
+lives = 5
+
+# These are variables for: time.sleep()
+a = 1
+b = 2
+c = 0.5
+d = 0.08
+
+# Killer random vortex
+killer = ""
+
+# list of the rooms in the house
+rooms = ["1", "2", "3"]
+
+# this function randomley transports killer to different rooms
+def killers_location():
+    global killer
+    killer = random.choice(rooms)
+    return killer
+        
+def colored(r,g,b, text):
+    return"\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r,g,b, text)
+
+
+# play again function
+def play_another_game():
+          global key
+          print("Escape Room -- >\n")
+          play_again = input("Play again (Y/N): ")
+          play_again = play_again.upper()
+          if play_again == "N" or play_again == "NO":
+              print("Maybe next time")
+              time.sleep(b)
+              exit()
+          elif play_again == "Y" or play_again == "YES":
+              start_game()
+          else:
+              exit()
+
+def game_over_image():
+    print()
+    print("     * * * * * * * * * *")
+    print("     *                 *")
+    print("     *    GAME OVER?   *")
+    print("     *                 *")
+    print("     * * * * * * * * * *")
+    print()
+    print()
+
+# Helper Functions
+# Funtion created to add type writer text:
+# the default is dots= "..." you can change this.
+def type_writer1(message,dots = colored(255,255,102,"...")):
+    txt = message + dots
+    for character in txt:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(d)
+    print()
+
+def type_writer(message,dots ="..."):
+    txt = message + dots
+    for character in txt:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(d)
+    print()
+
+# Helper Functions
+# Clear Screen Mac & PC --- works on both:
+def clearScreen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+# Helper functions for (Game Rooms)
+# Search Room Function
+def room_search(info_text):
+    type_writer("\nDo you want to search the room")
+    result = input("Enter (Y, N) ")
+    result = result.upper()
+    if result == "Y" or result == "YES":
+        print("\nYou search the room...")
+        time.sleep(2)
+        print(info_text)
+    elif result == "N" or result == "No":
+        type_writer("Nothing else to do.")
+        type_writer("You exit the room")
+        hallway()
+    else:
+        room_search("Nothing Found")
+
+
+# Helper functions for (Game Rooms)
+# function witch can be called each time someone leaves a room
+#Exit rooom helper function
+def exit_room(room_name ="", message_if = "Exiting the room..."):
+    exit = input(f"Do you want to exit the {room_name} (Y,N)")
+    exit = exit.upper()
+    if exit == "Y" or exit == "Yes":
+        print(message_if)
+        time.sleep(b)
+        hallway()
+    else:
+        time.sleep(b)
+        type_writer("\nYou here some strange noises and get startled and go back to the hallway")
+        type_writer("Exiting the room")
+        time.sleep(b)
+        hallway()
+
+def close_documents():
+    result = input("\nTo close documents type (Y): ")
+    if result == "y" or result == "yes":
+        exit_room(bedroom)
+    elif result == "n" or result == "no":
+        exit_room("bedroom")
+    else:
+        return(close_documents())
+
+# helper function entering the room
+def enter_room(room_name):
+    time.sleep(b)
+    type_writer(f"You are now entering the {room_name}")
+    time.sleep(b)
+# helper function for lights
+def turn_lights_on(message = "The light has been turned on"):
+    light_switch = input("Turn light switch on (Y,N) ")
+    if light_switch == "y" or light_switch == "Y":
+        time.sleep(b)
+        print(message)
+    else:
+        time.sleep(b)
+        type_writer("you wont be able to search the room in the dark")
+        return(turn_lights_on())
+
+
+
+# Start Game Function
+clearScreen()
+def start_game():
+    global key
+    global lives
+    print()
+    key = False
+    lives = 5
+    type_writer(colored(200,100,50,"Welcome to the weird world of \nnatalie fiddian, darren nickerson,\ngeorge agyapong and vincent roughley."),"")
+    print()
+    print("     * * * * * * * * * *")
+    print("     *                 *")
+    print("     *   Escape Room?  *")
+    print("     *                 *")
+    print("     * * * * * * * * * *")
+    print()
+    print()
+    print("Venture forward to unknown events!")
+    time.sleep(a)
+    print("Escape before it is to late...\n")
+    time.sleep(b)
+    response = input("Would you like to start the game? (Y/N): ")
+    if response.upper() == "y" or response.upper() == "Y":
+        time.sleep(2)
+        print("\nGreat, let's try and escape.\n")
+        user_name()
+    elif response.upper() == "n" or response.upper() == "NO":
+        print("No problem.")
+        time.sleep(2)
+        print("You know where to come if you change your mind.")
+    else:
+        print("Try again, I didn't understand that.")
+        start_game()
+# Add Name input
+def user_name():
+    global name
+    name = input("What is your name: ")
+    #cls()
+    type_writer(f"Welcome to your nightmare {name}", "...\n")
+    time.sleep(b)
+    intro()
+
+
+
+# Intro function
+def intro():
+    clearScreen()
+    print("\nEscape Room --->")
+    print("---------------\n")
+    type_writer1(f"{name}, you are walking, surrounded by beautiful nature")
+    type_writer1("You hear the birds, and insects as you scroll")
+    type_writer1("You feel relaxed taking in fresh air on this hot dry day")
+    type_writer1("It is lovely to be away from your computer")
+    print("\n")
+    type_writer1("Suddenly just as you take your next step you hear a sudden")
+    type_writer1("Defeaning cracking sound beneath you, as you look down you see a vortex opening") 
+    type_writer1("You quickly try to run but there is only one from here and that is down")
+    type_writer1("You fall, then you land, you are dazzed and relieved that your not injured")
+    print("\n")
+    type_writer1("The enviroment around you slowly starts coming into focus")
+    type_writer1("you appear to be somewhere you have never seen before")
+    type_writer1("There is a musty unlived smell that encompasses you")
+    type_writer1("The hairs stand up on the back of your neck as a uncomfortable feeling comes over you")
+    type_writer1("You are not in Kansas anymore kid")
+    print("\n")
+    type_writer1("The room that lies before you has 6 doors 3 to the north and 2 to west and 1 in the south")
+    type_writer1("You feel uneasy and pick yourself up and venture forward to unknown events that await you")
+    print("\n")
+    keystroke = input("Press any key to continue")
+    if keystroke == "y":
+        hallway()
+    else:
+        keystroke == True
+        hallway()
+
+# Room functions for games
+# hallway function
+def hallway():
+    global lives
+     #clearScreen
+    clearScreen()
+    if lives == 0:
+        game_over_image()
+        time.sleep(4)
+        play_another_game()
+    time.sleep(b)
+    type_writer("\nYou are in the hallway")
+    time.sleep(b)
+    type_writer("The house has 6 doors 3 to the north and 2 to west and 1 in the south")
+    time.sleep(b)
+
+    #print("Room Locations")
+    print("------------------------------------------")
+    time.sleep(c)
+    print("Living Room: 1, Kitchen: 2, Store Room: 3 \nBedroom: 4, Atic: 5, Cellar: 6")
+    time.sleep(c)
+    print("------------------------------------------\n")
+    print(f"You have ({lives}) lives")
+    time.sleep(b)
+    type_writer("Your objective is to escape this house", "...")
+    time.sleep(a)
+
+    # rooms menu ---> halway function
+    player = input("\nEnter a room number: ")
+    if player == "1":
+        living_room()
+    elif player == "2":
+        Kitchen()
+    elif player == "3":
+        storeroom()
+    elif player == "4":
+        bedroom()
+    elif player == "5":
+        attic()
+    elif player == "6":
+        cellar()
+    else:
+        print("This is not a room number")
+        return(hallway())
+
+# Living Room Function ---> 
+
+def living_room():
+    global lives
+    global killer
+    clearScreen()
+    enter_room("Living Room")
+    killers_location()
+    
+    if killer == "1":
+        time.sleep(2)
+        print("\n***You Have Been Killed***\n" * 10)
+        time.sleep(3)
+        lives -=1
+        hallway()
+    else:
+        time.sleep(2)
+        print("\n!Beware the killer is lurking...\n")
+        time.sleep(a)
+    clearScreen()
+    time.sleep(a)
+    # enter_room("Living Room")
+    print(f"\nAs {name}, slowly opens the door not knowing what is behind,\nthe smells of root and decay could not be missed,\ndirectly facing {name} was a sofa, tv in room pitch black.\n")
+    time.sleep(b)
+    type_writer(f"I need to get out of here, was the only thing ringing in {name}`s head","... \n")
+    time.sleep(b)
+    response = input("Do you want to turn on the light (Y,N) ")
+
+    if response == "y" or response == "Y":
+        print("The light turns on\n")
+        time.sleep(b)
+        print(f"\"AHHHHHHHHHHHHHHH\", sreamed {name} for a second,while falling back,\nthe trophies of human remains on the wall was too hard to stomach")
+    else: 
+        print("its pitch black in the room")
+    time.sleep(a)
+    room_search("Nothing found")
+    time.sleep(b)
+    print("\nNothing more to see in here")
+    exit_room("Living Room")
+
+def Kitchen():
+    global lives
+    global killer
+    clearScreen()
+    enter_room("Kitchen")
+    killers_location()
+    
+    if killer == "1":
+        time.sleep(2)
+        print("\n***You Have Been Killed***\n" * 10)
+        time.sleep(3)
+        lives -=1
+        hallway()
+    else:
+        time.sleep(2)
+        print("\n!Beware the killer is lurking...\n")
+        time.sleep(a)
+
+    clearScreen()
+    time.sleep(a)
+    time.sleep(a)
+    type_writer("it has been neglected for some time.")
+    time.sleep(a)
+    type_writer("There is a thick layer of dust and excrement all over the surfaces")
+    time.sleep(a)
+    type_writer("Its hard to find a place to stand in amongst the cat corpses piled on the floor")
+    time.sleep(b)
+    
+    clearScreen()
+    ask_input = input("Do you want to start moving the cat skeletons to create a pathway into the room? (Y/N): ")
+    if ask_input == "y" or ask_input == "Y":
+        type_writer("You roll up your sleeves and push the cats away creating space to walk in when you notice money floor.\nYour mum always told you to carry cash","...\n")
+        ask_input = input("Do you want to pick this up (Y,N) ")
+        if ask_input == "y" or ask_input == "Y":
+                type_writer("You dust the note clean on your jeans and pocket it, after all your mum is always right")
+                ask_input = input("Would you like to leave the room? (Y/N) ")
+                hallway()
+        else:
+            print("you are leaving the room")
+            hallway()
+
+    elif ask_input == "y" or ask_input == "Y": 
+            print("you are leaving the room")
+            hallway()
+    
+
+    elif ask_input == "n" or ask_input == "N":
+        type_writer("You back out of the room quietly and close the door")
+        hallway()
+    else: 
+        print ("try again")
+        Kitchen()
+
+
+def storeroom():
+    global lives
+    global killer
+    clearScreen()
+    enter_room("Store Room")
+    killers_location()
+    
+    if killer == "1":
+        time.sleep(2)
+        print("\n***You Have Been Killed***\n" * 10)
+        time.sleep(3)
+        lives -=1
+        hallway()
+    else:
+        time.sleep(2)
+        print("\n!Beware the killer is lurking...\n")
+        time.sleep(a)
+    clearScreen()
+    ask_input = input("\nWould you like to turn on the light? (Y/N):")
+    if ask_input == "y" or ask_input == "Y":
+        type_writer("The lights flicker and then dimly light the storeroom in front you, you look around and find a food jar that says EAT ME")
+        if ask_input == "y" or ask_input == "Y":
+            ask_input = input("You haven’t eaten in 24 hours, do you want to try this?(Y/N)")
+            if ask_input == "y" or ask_input == "Y":
+                type_writer("The contents of the jar smell better than the room, you tip it into your mouth, it satisfies you and you feel fine")
+                ask_input = input("Would you like to leave the room? Y/N")
+                hallway()
+            else:
+                print("you are leaving the room")
+                hallway()
+        elif ask_input == "y" or ask_input == "Y": 
+            print("you are leaving the room")
+            hallway()
+        else:
+            print("you are leaving the room")
+            hallway()
+            
+    elif ask_input == "n" or ask_input == "N":
+        type_writer("You back out of the room quietly and close the door")
+        hallway()
+    else: 
+        print ("try again")
+        storeroom()
+
+def attic():
+    global killer
+    global lives
+    clearScreen()
+    enter_room("Attic")
+    if killer == "1":
+        time.sleep(2)
+        print("\n***You Have Been Killed***\n" * 10)
+        time.sleep(3)
+        lives -=1
+        hallway()
+    else:
+        time.sleep(2)
+        print("\n!Beware the killer is lurking...\n")
+        time.sleep(a)
+    
+    global key
+    print("you have entered the attic\n\n")
+    clearScreen()
+    type_writer("As you enter the room you see loads of boxes and cobwebs all over the room and iron maiden and a rack")
+    type_writer("and a assortment of torture devices.")
+    search = input("do you want to search [y/n]: ")
+    if search == "y" or search == "Y":
+        key = True
+        clearScreen()
+        type_writer(f" {name} you find a black key")
+        time.sleep(b)
+        clearScreen()
+        type_writer(f" {name} you find nothing else in the room so you head back to the main hallway")
+        hallway()
+    elif search == "n" or search == "N":
+        leaveroom = input(f" {name} have you finished in this room [y/n]:")
+        if leaveroom == "y" or leaveroom == "Y":
+            clearScreen()
+            type_writer("you leave the room and head back to the main hall.")
+            hallway()
+        elif leaveroom == "n" or leaveroom == "N":
+            search = input("so do you want to search after all [y/n]:")
+            if search == "y" or search == "Y":
+                clearScreen()
+                type_writer("you find a black key")
+            elif search == "n" or search == "N":
+                clearScreen()
+                type_writer("REALLY DO YOU REALLY JUST WANT TO GO AROUND AN AROUND LIKE A HEADLESS CHICKEN")
+                type_writer("JUST DO A SEARCH ALREADY WILL YOU")
+                search = input("do you want to search [y]")
+                if search == "y" or search == "Y":
+                    clearScreen()
+                    type_writer("YOU FIND A BLACK KEY")
+                    type_writer("AND AFTER ALL THAT FAFFING ABOUT YOU HEAD BACK TO THE MAIN HALLWAY. ITS ABOUT TIME NOT GOT ALL DAY :P")
+                    hallway()
+                else:
+                    print("your input does not compute")
+                    attic()
+            else: 
+                print("your input does not compute")
+                attic()
+        else:
+            print("your input does not compute")
+            attic()           
+    else:
+        print("Your input does not compute")
+        attic()                      
+
+
+
+def bedroom():
+    global lives
+    global killer
+    clearScreen()
+    enter_room("Bedroom")
+    killers_location()
+    
+    if killer == "1":
+        time.sleep(2)
+        print("\n***You Have Been Killed***\n" * 10)
+        time.sleep(3)
+        lives -=1
+        hallway()
+    else:
+        time.sleep(2)
+        print("\n!Beware the killer is lurking...\n")
+        time.sleep(a)
+
+
+    turn_lights_on()
+    time.sleep(a)
+    print("")
+    type_writer("\nThe smell is like a rotten corpse")
+    time.sleep(a)
+    type_writer("It does not take long for the origin of the odor to become apparent")
+    time.sleep(a)
+    type_writer("A decomposing, putrefied, grangrenous body lies stinking on the bed",".")
+    time.sleep(b)
+    # search the room
+    result = input("\nWould you like to search the room? (Y/N): ")
+    result = result.lower()
+    if result == "y" or result == "yes":
+        type_writer("You search the room and find some documents")
+    # do you want to read the documents found.
+        result = input("Do you want to read them (Y/N): ")
+        result = result.lower()
+        if result == "y" or result == "yes":
+            clearScreen()
+            print("\nSuicide Note:")
+            print("---------------")
+            print("Excuse the blood, but I have slit my wrists and neck...")
+            print("I belong in the afterlife and not this one...")
+            print("No one will understand.")
+        # result = input("\nTo close documents type (Y): ")
+        if result == "y" or result == "yes":
+            exit_room("bedroom")
+# if you select not to reading the documents you leave their room 
+# you are now back in the hallway.
+        elif result == "n" or result == "no":
+           exit_room("bedroom")
+        else:
+            exit_room("Bedroom")
+
+
+# if you select no to searching the room you will leave their room
+# you are now back in the hallway
+    elif result == "n" or result == "no":
+        exit_room("bedroom")
+    elif result != "y" or result != "yes":
+       bedroom()
+    
+    exit_room(bedroom())
+
+def cellar():
+    global key
+    global lives
+    global killer
+    clearScreen()
+    enter_room("Cellar")
+    killers_location()
+    
+    if killer == "1":
+        time.sleep(2)
+        print("\n***You Have Been Killed***\n" * 10)
+        time.sleep(3)
+        lives -=1
+        hallway()
+    else:
+        time.sleep(2)
+        print("\n!Beware the killer is lurking...\n")
+        time.sleep(a)
+    if key == False:
+          time.sleep(b)
+          print(f"The door is locked {name} and you can not gain entry at this time!")
+          time.sleep(b)
+          time.sleep(b)
+          hallway()
+    else:
+          type_writer("You have a key","?")
+          type_writer("you place the key in the lock")
+          type_writer("The key turns")
+          type_writer("The door opens")
+          type_writer("You walk through the vortext opening")
+          time.sleep(b)
+          print()
+          print()
+          print("     * * * * * * * * * *")
+          print("     *                 *")
+          print("     *      Vortex     *")
+          print("     *                 *")
+          print("     * * * * * * * * * *")
+          print()
+          print()
+          time.sleep(b)
+          time.sleep(b)
+          type_writer("You have escaped")
+          clearScreen()
+          play_another_game()
+# def play_another_game():
+#           print("Escape Room -- >\n")
+#           play_again = input("Play again (Y/N): ")
+#           play_again = play_again.upper()
+#           if play_again == "N" or play_again == "NO":
+#               print("Maybe next time")
+#               time.sleep(b)
+#           elif play_again == "Y" or play_again == "YES":
+#               start_game()
+#           else:
+#               time.sleep(b)
+#               print("Enjoy your freedom...")
+start_game()
